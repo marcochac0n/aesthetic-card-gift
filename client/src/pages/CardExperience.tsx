@@ -17,20 +17,22 @@ import { cardData, type CardPage } from '@/card-data';
  * 2. Smooth page transitions with 3D perspective
  * 3. Mobile-optimized swipe gestures
  * 4. Decorative botanical elements on each page
+ * 5. Triple-click to reset countdown
  */
-
-
 
 interface CardExperienceProps {
   cards?: CardPage[];
   onClose?: () => void;
+  onResetCountdown?: () => void;
 }
 
-export default function CardExperience({ cards = cardData, onClose }: CardExperienceProps) {
+export default function CardExperience({ cards = cardData, onClose, onResetCountdown }: CardExperienceProps) {
   const [currentPage, setCurrentPage] = useState(0);
   const [isFlipping, setIsFlipping] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [clickCount, setClickCount] = useState(0);
+  const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const goToNextPage = () => {
     if (currentPage < cards.length - 1 && !isFlipping) {
@@ -73,6 +75,28 @@ export default function CardExperience({ cards = cardData, onClose }: CardExperi
     }
     if (isRightSwipe) {
       goToPreviousPage();
+    }
+  };
+
+  // Triple-click on card to reset countdown
+  const handleCardClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+    }
+
+    if (newCount === 3) {
+      setClickCount(0);
+      if (onResetCountdown) {
+        onResetCountdown();
+      }
+    } else {
+      const timeout = setTimeout(() => {
+        setClickCount(0);
+      }, 500);
+      setClickTimeout(timeout);
     }
   };
 
@@ -136,16 +160,18 @@ export default function CardExperience({ cards = cardData, onClose }: CardExperi
         </div>
 
         {/* Card */}
-        <div className={`w-full max-w-md ${currentCard.backgroundColor || 'bg-amber-50'} rounded-lg shadow-2xl p-12 min-h-96 relative border-2 border-amber-100 ${isFlipping ? 'page-flip' : ''}`}
+        <div className={`w-full max-w-md ${currentCard.backgroundColor || 'bg-amber-50'} rounded-lg shadow-2xl p-12 min-h-96 relative border-2 border-amber-100 cursor-pointer ${isFlipping ? 'page-flip' : ''}`}
           style={{
             boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
-          }}>
+          }}
+          onClick={handleCardClick}
+        >
           
           {/* Decorative border elements */}
-          <div className="absolute top-4 left-4 opacity-20 w-16 h-16">
+          <div className="absolute top-4 left-4 opacity-20 w-16 h-16 pointer-events-none">
             <img src="/images/botanical-border.png" alt="" className="w-full h-full object-contain" />
           </div>
-          <div className="absolute bottom-4 right-4 opacity-20 w-16 h-16 transform rotate-180">
+          <div className="absolute bottom-4 right-4 opacity-20 w-16 h-16 transform rotate-180 pointer-events-none">
             <img src="/images/botanical-border.png" alt="" className="w-full h-full object-contain" />
           </div>
 

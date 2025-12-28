@@ -44,6 +44,11 @@ export default function Home() {
     setCardOpened(false);
   };
 
+  const handleResetCountdown = () => {
+    setIsUnlocked(false);
+    setCardOpened(false);
+  };
+
   if (!isUnlocked) {
     return <CountdownPage onUnlock={handleUnlock} />;
   }
@@ -109,5 +114,5 @@ export default function Home() {
     );
   }
 
-  return <CardExperience onClose={handleCloseCard} />;
+  return <CardExperience onClose={handleCloseCard} onResetCountdown={handleResetCountdown} />;
 }
