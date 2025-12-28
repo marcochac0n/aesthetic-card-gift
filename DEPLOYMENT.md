@@ -1,6 +1,6 @@
-# Deployment Guide
+# Deployment Guide: Aesthetic Card Gift
 
-This guide covers how to deploy your aesthetic card gift to GitHub Pages or other free hosting platforms.
+This guide covers how to deploy your aesthetic card gift website to GitHub Pages or other free hosting platforms.
 
 ## Table of Contents
 
@@ -34,7 +34,7 @@ GitHub Pages is a free hosting service that works perfectly for this static webs
 Open your terminal and navigate to your project directory:
 
 ```bash
-cd /home/ubuntu/aesthetic-card-gift
+cd /path/to/aesthetic-card-gift
 ```
 
 Initialize Git and push your code:
@@ -50,18 +50,35 @@ git push -u origin main
 
 Replace `YOUR_USERNAME` with your actual GitHub username.
 
-### Step 3: Build the Project
+### Step 3: Build the Project for GitHub Pages
+
+The key to making this work on GitHub Pages is setting the `GITHUB_PAGES` environment variable during the build. This configures the correct base path for your subdirectory deployment.
 
 ```bash
+# Install dependencies
 pnpm install
+
+# Build with GitHub Pages configuration
+GITHUB_PAGES=true pnpm build
+```
+
+**On Windows (PowerShell):**
+```powershell
+$env:GITHUB_PAGES='true'
 pnpm build
 ```
 
-This creates a `dist/public/` folder with your built website.
+**On Windows (Command Prompt):**
+```cmd
+set GITHUB_PAGES=true
+pnpm build
+```
+
+This creates a `dist/public/` folder with your built website, with all asset paths correctly configured for subdirectory deployment.
 
 ### Step 4: Deploy to GitHub Pages
 
-#### Option A: Using GitHub Pages Settings (Recommended for Beginners)
+#### Option A: Using GitHub Pages Settings (Recommended)
 
 1. Go to your repository on GitHub
 2. Click **Settings** (top right)
@@ -72,7 +89,7 @@ This creates a `dist/public/` folder with your built website.
    - Folder: Select "/docs"
 5. Click "Save"
 
-Now you need to copy your built files to a `docs` folder:
+Now copy your built files to a `docs` folder:
 
 ```bash
 # From your project root
@@ -85,17 +102,20 @@ git push
 
 Your site will be live at: `https://YOUR_USERNAME.github.io/aesthetic-card-gift`
 
+**Important:** The `GITHUB_PAGES=true` build step is crucial! Without it, assets won't load correctly on GitHub Pages.
+
 #### Option B: Using a Custom Domain
 
 If you have a custom domain:
 
-1. Follow Option A steps 1-4
+1. Follow Option A steps 1-5
 2. In GitHub Pages settings, add your custom domain
 3. Follow your domain registrar's instructions to point DNS to GitHub Pages
+4. GitHub will automatically create a CNAME file
 
 #### Option C: Using GitHub Actions (Advanced)
 
-Create a `.github/workflows/deploy.yml` file:
+For automatic deployments, create `.github/workflows/deploy.yml`:
 
 ```yaml
 name: Deploy to GitHub Pages
@@ -115,7 +135,7 @@ jobs:
           node-version: 18
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm build
+      - run: GITHUB_PAGES=true pnpm build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -123,7 +143,7 @@ jobs:
           publish_dir: ./dist/public
 ```
 
-This automatically builds and deploys whenever you push to main.
+This automatically builds and deploys whenever you push to main, with the correct GitHub Pages configuration.
 
 ---
 
@@ -131,28 +151,37 @@ This automatically builds and deploys whenever you push to main.
 
 ### Netlify (Free)
 
+Netlify is a great alternative with automatic deployments.
+
 1. Go to [netlify.com](https://netlify.com)
 2. Sign up with GitHub
 3. Click "New site from Git"
 4. Select your repository
-5. Build command: `pnpm build`
-6. Publish directory: `dist/public`
-7. Click "Deploy"
+5. Configure build settings:
+   - **Build command:** `GITHUB_PAGES=true pnpm build`
+   - **Publish directory:** `dist/public`
+6. Click "Deploy"
 
-Your site will be live at a Netlify subdomain (you can add a custom domain).
+Your site will be live at a Netlify subdomain.
 
 ### Vercel (Free)
+
+Vercel is optimized for React and Vite projects.
 
 1. Go to [vercel.com](https://vercel.com)
 2. Sign up with GitHub
 3. Click "New Project"
 4. Import your repository
-5. Vercel auto-detects the build settings
+5. Configure:
+   - **Build Command:** `GITHUB_PAGES=true pnpm build`
+   - **Output Directory:** `dist/public`
 6. Click "Deploy"
 
 Your site will be live immediately.
 
 ### Firebase Hosting (Free)
+
+Firebase offers free static hosting with global CDN.
 
 1. Install Firebase CLI: `npm install -g firebase-tools`
 2. Go to [firebase.google.com](https://firebase.google.com)
@@ -175,7 +204,7 @@ Before deploying, test your site locally:
 pnpm dev
 
 # Production build preview
-pnpm build
+GITHUB_PAGES=true pnpm build
 pnpm preview
 ```
 
@@ -191,15 +220,17 @@ Open `http://localhost:3000` in your browser.
 - [ ] Navigation buttons work (previous/next)
 - [ ] Page indicators work
 - [ ] Swipe gestures work on mobile
-- [ ] All images load correctly
+- [ ] **All images load correctly** (this is critical for GitHub Pages!)
 - [ ] Text is readable on all screen sizes
 - [ ] No console errors (open DevTools: F12)
+- [ ] Close button works and reseals the card
+- [ ] Triple-click on card resets countdown
 
 ### Testing the Countdown
 
 To test the countdown without waiting until December 31:
 
-1. Edit `client/src/pages/CountdownPage.tsx`
+1. Edit `client/src/pages/Home.tsx`
 2. Change the target date to a time in the near future:
    ```typescript
    const targetDate = new Date('2025-01-05T15:30:00').getTime();
@@ -225,8 +256,8 @@ After making changes:
 
 ```bash
 # Make your changes to card-data.ts or other files
-# Then:
-pnpm build
+# Then rebuild with GitHub Pages configuration:
+GITHUB_PAGES=true pnpm build
 cp -r dist/public/* docs/
 git add .
 git commit -m "Update card content"
@@ -249,17 +280,40 @@ git push
 
 ## Troubleshooting
 
-### Images not loading after deployment
+### Images not loading after deployment (404 errors)
 
-**Problem:** Images show as broken on the deployed site.
+**Problem:** Images show as broken on the deployed site, or console shows 404 errors for image files.
 
-**Solution:** Ensure all image paths in your code start with `/images/` (absolute path from root). Check that images are in `client/public/images/`.
+**Solution:** This is the most common issue! Make sure you:
+
+1. **Built with the correct environment variable:**
+   ```bash
+   GITHUB_PAGES=true pnpm build
+   ```
+   Without this, asset paths won't be configured correctly for subdirectory deployment.
+
+2. **Deployed the correct folder:**
+   - For GitHub Pages: Copy `dist/public/*` to the `docs/` folder
+   - For Netlify/Vercel: Set publish directory to `dist/public`
+
+3. **All images are in the correct location:**
+   - Check that images are in `client/public/images/`
+   - Verify filenames match exactly (case-sensitive on Linux/Mac)
+
+4. **Clear browser cache:**
+   - Hard refresh: Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)
+   - Or open DevTools (F12) → Application → Clear Storage → Clear All
 
 ### Countdown shows wrong time
 
 **Problem:** The countdown doesn't match your timezone.
 
-**Solution:** The countdown is set to Mexico City time (UTC-6). If you need a different timezone, edit `CountdownPage.tsx` and adjust the `mexicoCityOffset` calculation.
+**Solution:** The countdown is set to Mexico City time (UTC-6). If you need a different timezone:
+
+1. Edit `client/src/pages/Home.tsx`
+2. Find the line with `mexicoCityOffset = -6 * 60 * 60 * 1000`
+3. Change `-6` to your timezone offset (e.g., `-5` for EST, `-8` for PST)
+4. Rebuild and redeploy
 
 ### Bypass codes not working
 
@@ -268,7 +322,7 @@ git push
 **Solution:** 
 - Make sure you're triple-clicking the wax seal (not single or double-click)
 - Try entering codes in lowercase: `bee`, `iris`, `dance`
-- Check that you haven't modified the bypass code logic in `CountdownPage.tsx`
+- Check browser console (F12) for any JavaScript errors
 
 ### Build fails with "Cannot find module"
 
@@ -276,8 +330,9 @@ git push
 
 **Solution:** 
 ```bash
+rm -rf node_modules pnpm-lock.yaml
 pnpm install
-pnpm build
+GITHUB_PAGES=true pnpm build
 ```
 
 ### Site looks different on mobile
@@ -294,10 +349,19 @@ pnpm build
 
 **Problem:** GitHub Pages or Netlify deployment is slow.
 
-**Solution:** This is normal for the first deployment. Subsequent deployments are faster. If it takes more than 10 minutes, check:
-- GitHub Actions logs (if using GitHub Actions)
-- Netlify/Vercel build logs
-- Check for any build errors
+**Solution:** This is normal for the first deployment. Subsequent deployments are faster. If it takes more than 10 minutes:
+- Check GitHub Actions logs (if using GitHub Actions)
+- Check Netlify/Vercel build logs
+- Look for any build errors in the logs
+
+### "Cannot find base path" or similar error
+
+**Problem:** You see errors about base paths or assets.
+
+**Solution:** This happens when the `GITHUB_PAGES=true` build step was skipped. Rebuild with:
+```bash
+GITHUB_PAGES=true pnpm build
+```
 
 ---
 
@@ -318,8 +382,9 @@ The countdown and bypass mechanism are all client-side (in the browser), so they
 
 1. **Customize your card** - Edit `client/src/card-data.ts` to personalize the content
 2. **Test locally** - Run `pnpm dev` and verify everything works
-3. **Deploy** - Follow the deployment steps above
-4. **Share** - Send the link to your special person!
+3. **Build for deployment** - Run `GITHUB_PAGES=true pnpm build`
+4. **Deploy** - Follow the deployment steps above
+5. **Share** - Send the link to your special person!
 
 ---
 
@@ -328,3 +393,5 @@ The countdown and bypass mechanism are all client-side (in the browser), so they
 For more information about customizing your card, see `CARD_CUSTOMIZATION.md`.
 
 For design details, see the main `README.md`.
+
+**Key Takeaway:** Always remember to build with `GITHUB_PAGES=true` before deploying to GitHub Pages. This is what makes all the assets load correctly!

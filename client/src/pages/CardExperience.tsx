@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getAssetPath } from '@/lib/assets';
 import { cardData, type CardPage } from '@/card-data';
 
 /**
@@ -145,7 +146,13 @@ export default function CardExperience({ cards = cardData, onClose, onResetCount
       `}</style>
 
       {/* Card container */}
-      <div className="w-full max-w-2xl px-4 py-8 flex flex-col items-center">
+      <div className="w-full max-w-2xl px-4 py-8 flex flex-col items-center"
+        style={{
+          backgroundImage: `url(${getAssetPath('images/vintage-letter-texture.png')})`,
+          backgroundSize: 'cover',
+          backgroundAttachment: 'fixed',
+        }}
+      >
         {/* Progress indicator */}
         <div className="w-full max-w-md mb-8">
           <div className="h-1 bg-amber-100 rounded-full overflow-hidden">
@@ -169,10 +176,10 @@ export default function CardExperience({ cards = cardData, onClose, onResetCount
           
           {/* Decorative border elements */}
           <div className="absolute top-4 left-4 opacity-20 w-16 h-16 pointer-events-none">
-            <img src="/images/botanical-border.png" alt="" className="w-full h-full object-contain" />
+            <img src={getAssetPath('images/botanical-border.png')} alt="" className="w-full h-full object-contain" />
           </div>
           <div className="absolute bottom-4 right-4 opacity-20 w-16 h-16 transform rotate-180 pointer-events-none">
-            <img src="/images/botanical-border.png" alt="" className="w-full h-full object-contain" />
+            <img src={getAssetPath('images/botanical-border.png')} alt="" className="w-full h-full object-contain" />
           </div>
 
           {/* Content */}
@@ -185,7 +192,7 @@ export default function CardExperience({ cards = cardData, onClose, onResetCount
             
             {currentCard.image && (
               <div className="mb-6 flex justify-center text-reveal text-reveal-line-2">
-                <img src={currentCard.image} alt="" className="w-32 h-32 object-contain" />
+                <img src={getAssetPath(currentCard.image)} alt="" className="w-32 h-32 object-contain" />
               </div>
             )}
 

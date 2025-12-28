@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getAssetPath } from '@/lib/assets';
 import CountdownPage from './CountdownPage';
 import CardExperience from './CardExperience';
 
@@ -58,7 +59,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
         style={{
-          backgroundImage: 'url(/images/vintage-letter-texture.png)',
+          backgroundImage: `url(${getAssetPath('images/vintage-letter-texture.png')})`,
           backgroundSize: 'cover',
           backgroundAttachment: 'fixed',
         }}>
@@ -87,7 +88,7 @@ export default function Home() {
 
             <div className="flex justify-center mb-8">
               <img
-                src="/images/antique-wax-seal.png"
+                src={getAssetPath('images/antique-wax-seal.png')}
                 alt="Sealed card"
                 className="w-32 h-32 object-contain drop-shadow-lg"
               />

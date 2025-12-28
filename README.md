@@ -1,373 +1,303 @@
-# Aesthetic Card Gift
+# Aesthetic Card Gift 🎁
 
-A beautiful, interactive digital gift card experience with a countdown timer, sealed wax aesthetic, and multiple pages. Built with React, Tailwind CSS, and designed with romantic naturalism in mind.
+A beautiful, interactive digital gift card experience with countdown timer, sealed wax aesthetic, and multi-page card interaction. Built with React, Tailwind CSS, and optimized for mobile devices.
 
-![Aesthetic Card Gift](./screenshot.png)
+## ✨ Features
 
-## Features
+- **Countdown Timer** - Displays days, hours, minutes, and seconds until December 31, 2025 at 11:00 PM (Mexico City time)
+- **Sealed Wax Card** - Animated wax seal with dripping effect during countdown
+- **Interactive Card** - Multi-page experience with smooth page-turning animations
+- **Bypass Mechanism** - Hidden but discoverable unlock codes (`bee`, `iris`, `dance`)
+- **Mobile Optimized** - Full touch support with swipe gestures for page navigation
+- **Botanical Aesthetic** - Warm pastel yellows with antique design elements
+- **Customizable Content** - Easy-to-edit card pages with custom backgrounds
+- **Responsive Design** - Works beautifully on phones, tablets, and desktops
 
-### 🎁 Core Experience
-
-- **Countdown Timer** - Card unlocks at a specific date and time (default: 11:00 PM, December 31, 2025, Mexico City Time)
-- **Sealed Card Design** - Antique wax seal animation with dripping effect
-- **Interactive Pages** - Multiple card pages with smooth page-turning animations
-- **Mobile Optimized** - Fully responsive design with touch/swipe support
-- **Bypass Mechanism** - Hidden Easter egg for testing (triple-click wax seal)
-
-### 🎨 Design Philosophy
+## 🎨 Design Philosophy
 
 **Botanical Reverie** - A romantic naturalism aesthetic featuring:
+- Warm pastel yellow color palette
+- Antique letter and wax seal imagery
+- Organic, flowing layouts
+- Handcrafted typography (Playfair Display, Lora, Cormorant Garamond)
+- Subtle animations and transitions
+- Botanical decorative elements (bees, iris flowers)
 
-- Pastel yellow color palette with warm, inviting tones
-- Antique aesthetic suggesting timelessness and care
-- Botanical imagery (bees, iris flowers, decorative borders)
-- Handcrafted quality with subtle imperfections
-- Elegant typography using Playfair Display, Lora, and Cormorant Garamond
-
-### 🖼️ Visual Assets
-
-Includes custom-generated artwork:
-
-- Watercolor bee illustration
-- Vintage botanical iris print
-- Antique red wax seal with bee motif
-- Aged paper texture background
-- Decorative botanical borders
-
-### 📱 Mobile Features
-
-- Swipe left/right to turn pages
-- Touch-friendly navigation buttons
-- Responsive typography and spacing
-- Optimized for all screen sizes
-
----
-
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ and pnpm
-- Git (for deployment)
+- Node.js 18+ and pnpm (or npm)
+- Git
 
 ### Installation
 
 ```bash
-cd /home/ubuntu/aesthetic-card-gift
+# Clone the repository (or download the files)
+git clone https://github.com/YOUR_USERNAME/aesthetic-card-gift.git
+cd aesthetic-card-gift
+
+# Install dependencies
 pnpm install
-```
 
-### Development
-
-Start the development server:
-
-```bash
+# Start development server
 pnpm dev
 ```
 
-Open `http://localhost:3000` in your browser.
+Visit `http://localhost:3000` in your browser.
 
-### Build for Production
+### Customizing the Card
 
-```bash
-pnpm build
-```
-
-This creates a `dist/public/` folder ready for deployment.
-
----
-
-## Customization
-
-### Editing Card Content
-
-All card content is in `client/src/card-data.ts`. Edit the `cardData` array to customize pages:
+Edit `client/src/card-data.ts` to personalize the card content:
 
 ```typescript
-{
-  id: 'page1',
-  title: 'Your Title',
-  content: 'Your message here...',
-  image: '/images/bee-watercolor.png', // Optional
-  backgroundColor: 'bg-yellow-50', // Optional
-}
+export const cardData: CardPage[] = [
+  {
+    id: 'cover',
+    title: 'Your Title Here',
+    content: 'Your message here',
+    backgroundColor: 'bg-amber-50',
+  },
+  // Add more pages...
+];
 ```
 
-See `CARD_CUSTOMIZATION.md` for detailed instructions.
+Each page supports:
+- `title` - Page heading (optional)
+- `content` - Main text
+- `image` - Path to image (optional, e.g., `/images/bee-watercolor.png`)
+- `backgroundColor` - Tailwind color class (e.g., `bg-pink-50`, `bg-blue-50`)
 
-### Changing the Unlock Time
+## 🚀 Deploying to GitHub Pages
 
-Edit `client/src/pages/CountdownPage.tsx`:
+**CRITICAL: Always build with the `GITHUB_PAGES=true` environment variable!** This ensures all assets load correctly on GitHub Pages.
+
+```bash
+# Step 1: Build for GitHub Pages
+GITHUB_PAGES=true pnpm build
+
+# Step 2: Copy to docs folder
+mkdir -p docs
+cp -r dist/public/* docs/
+
+# Step 3: Commit and push
+git add docs/
+git commit -m "Deploy to GitHub Pages"
+git push origin main
+```
+
+Then enable GitHub Pages in your repository settings:
+1. Go to Settings → Pages
+2. Source: "Deploy from a branch"
+3. Branch: "main"
+4. Folder: "/docs"
+5. Click Save
+
+Your site will be live at: `https://YOUR_USERNAME.github.io/aesthetic-card-gift`
+
+**⚠️ Important:** If images don't load after deployment, make sure you:
+1. Built with `GITHUB_PAGES=true`
+2. Copied files to the `docs/` folder
+3. Enabled GitHub Pages in settings
+
+**See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions and alternatives (Netlify, Vercel, Firebase).**
+
+## 📝 Customization Guide
+
+### Changing the Countdown Date/Time
+
+Edit `client/src/pages/Home.tsx`:
 
 ```typescript
 const targetDate = new Date('2025-12-31T23:00:00').getTime();
 ```
 
-Change to your desired date/time in format: `YYYY-MM-DDTHH:MM:SS`
+Change the date/time as needed. The timezone is set to Mexico City (UTC-6).
 
-### Bypass Codes
+### Changing Bypass Codes
 
-To test without waiting, triple-click the wax seal and enter:
-- `bee`
-- `iris`
-- `dance`
+Edit `client/src/pages/CountdownPage.tsx`:
 
----
-
-## Deployment
-
-### GitHub Pages (Recommended)
-
-```bash
-# Build the project
-pnpm build
-
-# Create docs folder and copy files
-mkdir -p docs
-cp -r dist/public/* docs/
-
-# Push to GitHub
-git add .
-git commit -m "Deploy to GitHub Pages"
-git push
+```typescript
+if (
+  bypassCode.toLowerCase() === 'your-code-1' ||
+  bypassCode.toLowerCase() === 'your-code-2' ||
+  bypassCode.toLowerCase() === 'your-code-3'
+) {
+  setIsUnlocked(true);
+  onUnlock();
+}
 ```
 
-Then enable GitHub Pages in your repository settings.
+### Adding Custom Images
 
-See `DEPLOYMENT.md` for detailed instructions and alternative hosting options.
+1. Place images in `client/public/images/`
+2. Reference them in `card-data.ts`:
+   ```typescript
+   image: '/images/your-image.png'
+   ```
 
----
+### Changing Colors
 
-## File Structure
+The site uses Tailwind CSS color classes. Common options:
+- `bg-amber-50`, `bg-yellow-50` - Warm yellows
+- `bg-pink-50`, `bg-purple-50` - Soft pastels
+- `bg-blue-50`, `bg-green-50` - Cool tones
+
+Edit the `backgroundColor` field in `card-data.ts`.
+
+**See [CARD_CUSTOMIZATION.md](./CARD_CUSTOMIZATION.md) for detailed customization instructions.**
+
+## 📱 User Interactions
+
+### Before Countdown Ends
+
+1. **View Countdown** - See days, hours, minutes, seconds until unlock
+2. **Triple-Click Wax Seal** - Reveals bypass input
+3. **Enter Bypass Code** - Use `bee`, `iris`, or `dance` to unlock early
+
+### After Countdown Ends (or Bypass Used)
+
+1. **Click "Open Card"** - Opens the sealed card
+2. **Navigate Pages** - Use arrow buttons or swipe left/right on mobile
+3. **View Progress** - Progress bar shows current page
+4. **Close Card** - Click "✕ Close Card" button to reseal
+5. **Triple-Click Card** - Resets countdown for testing
+
+## 🛠️ Development
+
+### Project Structure
 
 ```
 aesthetic-card-gift/
 ├── client/
 │   ├── public/
-│   │   └── images/          # Generated artwork
+│   │   └── images/          # Your images go here
 │   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Home.tsx     # Main entry point
-│   │   │   ├── CountdownPage.tsx
-│   │   │   └── CardExperience.tsx
-│   │   ├── card-data.ts     # Card content (EDIT THIS)
-│   │   ├── App.tsx
-│   │   └── index.css        # Design tokens & typography
+│   │   ├── pages/           # Page components
+│   │   ├── components/      # Reusable UI components
+│   │   ├── lib/             # Utility functions (includes asset path helper)
+│   │   ├── card-data.ts     # Card content (EDIT THIS!)
+│   │   ├── App.tsx          # Main app component
+│   │   ├── index.css        # Global styles
+│   │   └── main.tsx         # Entry point
 │   └── index.html
-├── CARD_CUSTOMIZATION.md    # How to edit cards
-├── DEPLOYMENT.md            # How to deploy
-└── README.md               # This file
+├── vite.config.ts           # Vite configuration
+├── package.json
+├── DEPLOYMENT.md            # Deployment guide
+├── CARD_CUSTOMIZATION.md    # Customization guide
+└── README.md                # This file
 ```
 
----
+### Available Scripts
 
-## Design Details
+```bash
+pnpm dev        # Start development server
+pnpm build      # Build for production
+pnpm preview    # Preview production build locally
+pnpm format     # Format code with Prettier
+pnpm check      # Check TypeScript types
+```
 
-### Color Palette
+### Building for Different Platforms
 
-- **Primary:** Warm gold (`oklch(0.85 0.15 65)`)
-- **Background:** Cream (`oklch(0.99 0.01 65)`)
-- **Accents:** Sage green, dusty rose
-- **Text:** Dark warm brown (`oklch(0.3 0.02 65)`)
+```bash
+# GitHub Pages (with subdirectory) - ALWAYS USE THIS FOR GITHUB PAGES
+GITHUB_PAGES=true pnpm build
 
-All colors use OKLCH color space for perceptual uniformity.
+# Regular hosting (root domain)
+pnpm build
 
-### Typography
+# Netlify / Vercel
+GITHUB_PAGES=true pnpm build
+```
 
-- **Display:** Playfair Display (elegant, antique)
-- **Body:** Lora (readable, warm)
-- **Accent:** Cormorant Garamond (decorative, thin)
+## 🎯 Key Technologies
 
-### Animations
+- **React 19** - UI framework
+- **Vite** - Build tool and dev server
+- **Tailwind CSS 4** - Utility-first CSS
+- **TypeScript** - Type safety
+- **Wouter** - Client-side routing
+- **shadcn/ui** - UI components
 
-- **Countdown:** Smooth number transitions
-- **Wax Seal:** Continuous dripping animation
-- **Page Turns:** Smooth flip with 3D perspective
-- **Text Reveals:** Staggered line-by-line appearance
-- **Hover Effects:** Subtle scale and glow effects
-
----
-
-## Browser Support
+## 📦 Browser Support
 
 - Chrome/Edge 90+
 - Firefox 88+
 - Safari 14+
-- Mobile browsers (iOS Safari, Chrome Mobile)
+- Mobile browsers (iOS Safari, Chrome Android)
 
----
+## 🔒 Privacy & Security
 
-## Technical Stack
+- ✅ Static website - no backend or database
+- ✅ No user data collection
+- ✅ No tracking (unless you add analytics)
+- ✅ Safe to share the link publicly
+- ✅ All logic runs in the browser
 
-- **Framework:** React 19
-- **Styling:** Tailwind CSS 4
-- **Routing:** Wouter (client-side)
-- **Build Tool:** Vite
-- **Fonts:** Google Fonts (Playfair Display, Lora, Cormorant Garamond)
+## 🐛 Troubleshooting
 
----
+### Images not loading after deployment (404 errors)
+This is the most common issue! Make sure you:
+1. Built with `GITHUB_PAGES=true pnpm build`
+2. Copied files to the `docs/` folder
+3. Enabled GitHub Pages in repository settings
+4. Clear browser cache (Ctrl+Shift+R or Cmd+Shift+R)
 
-## Features Explained
+See [DEPLOYMENT.md](./DEPLOYMENT.md#images-not-loading-after-deployment-404-errors) for more details.
 
-### Countdown Timer
+### Countdown shows wrong time
+The countdown is set to Mexico City time (UTC-6). Adjust the timezone offset in `Home.tsx` if needed.
 
-The countdown calculates the time remaining until the unlock moment. It:
+### Bypass codes not working
+Triple-click the wax seal (not single/double-click) and enter codes in lowercase: `bee`, `iris`, `dance`.
 
-- Updates every second
-- Displays days, hours, minutes, seconds
-- Automatically unlocks when time reaches zero
-- Accounts for Mexico City timezone (UTC-6)
-
-### Sealed Card State
-
-Before unlock, the card shows:
-
-- Elegant "A Gift for You" header
-- Countdown timer with four displays
-- Animated wax seal with dripping effect
-- Message about the sealed state
-- Pulsing glow animation to draw attention
-
-### Bypass Mechanism
-
-For testing without waiting:
-
-1. Triple-click the wax seal (not single or double-click)
-2. A modal appears asking for a "magic word"
-3. Enter `bee`, `iris`, or `dance`
-4. Card unlocks immediately
-
-This is intentionally simple for development/testing.
-
-### Page-Turning Experience
-
-Once unlocked:
-
-- Card displays one page at a time
-- Smooth flip animation between pages
-- Text reveals line-by-line for discovery
-- Decorative botanical borders frame content
-- Navigation via buttons or swipe gestures
-- Progress indicator shows current position
-
----
-
-## Accessibility
-
-- Keyboard navigation (arrow keys, Tab)
-- Focus indicators on all interactive elements
-- Semantic HTML structure
-- High contrast text on backgrounds
-- Touch-friendly button sizes (48px minimum)
-
----
-
-## Performance
-
-- **Build Size:** ~650 KB (minified), ~163 KB (gzipped)
-- **Load Time:** < 2 seconds on 4G
-- **Animations:** GPU-accelerated, 60 FPS
-- **Mobile:** Optimized for low-end devices
-
----
-
-## Customization Examples
-
-### Add a Personal Memory Page
-
-Edit `client/src/card-data.ts`:
-
-```typescript
-{
-  id: 'memory',
-  title: 'Our First Meeting',
-  content: 'I remember the moment you walked in... [your story]',
-  backgroundColor: 'bg-rose-50',
-}
+### Build errors
+```bash
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+GITHUB_PAGES=true pnpm build
 ```
 
-### Add an Image Page
+## 📚 Documentation
 
-```typescript
-{
-  id: 'photo',
-  title: 'A Moment in Time',
-  content: 'This is what I see when I think of you.',
-  image: '/images/bee-watercolor.png',
-  backgroundColor: 'bg-purple-50',
-}
-```
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Complete deployment guide for GitHub Pages, Netlify, Vercel, and Firebase
+- **[CARD_CUSTOMIZATION.md](./CARD_CUSTOMIZATION.md)** - Detailed customization instructions
+- **[ideas.md](./ideas.md)** - Design philosophy and aesthetic choices
 
-### Change Colors
+## 🎁 Gift Customization Ideas
 
-```typescript
-{
-  id: 'special',
-  title: 'Something Special',
-  content: 'Your message...',
-  backgroundColor: 'bg-green-50', // Change to any Tailwind color
-}
-```
+The card includes pages themed around:
+- **Bee** - Kindness and sweetness
+- **Iris** - Beauty and resilience
+- **Dancer** - Joy and rhythm
+- **Runner** - Determination and courage
+- **Café** - Warmth and comfort
 
----
+Customize each page to reflect your special person's unique qualities!
 
-## Troubleshooting
+## 📄 License
 
-### Countdown not working
-- Check that the target date is in the future
-- Verify the date format: `YYYY-MM-DDTHH:MM:SS`
-- Clear browser cache and reload
+This project is open source and available for personal use.
 
-### Images not loading
-- Ensure image paths start with `/images/`
-- Check that images exist in `client/public/images/`
-- Verify file names match exactly (case-sensitive)
+## 🙏 Credits
 
-### Bypass not working
-- Triple-click the wax seal (not single/double-click)
-- Enter codes in lowercase: `bee`, `iris`, `dance`
-- Check browser console for errors (F12)
-
-### Mobile layout broken
-- Open DevTools (F12)
-- Click mobile device icon
-- Test different screen sizes
-- Check that all text is readable
+- **Design:** Botanical Reverie aesthetic
+- **Typography:** Playfair Display, Lora, Cormorant Garamond
+- **Imagery:** Custom-generated botanical illustrations
+- **Framework:** React + Vite + Tailwind CSS
 
 ---
 
-## License
+## 🚀 Next Steps
 
-This project is provided as-is for personal use. Feel free to customize and share with your special person!
-
----
-
-## Support
-
-For detailed customization instructions, see `CARD_CUSTOMIZATION.md`.
-
-For deployment help, see `DEPLOYMENT.md`.
-
-For design philosophy and inspiration, see `ideas.md`.
+1. **Customize the card** - Edit `client/src/card-data.ts` with your personal messages
+2. **Test locally** - Run `pnpm dev` and verify everything works
+3. **Deploy** - Follow [DEPLOYMENT.md](./DEPLOYMENT.md) to publish your gift
+   - **Remember:** Always build with `GITHUB_PAGES=true` for GitHub Pages!
+4. **Share** - Send the link to your special person!
 
 ---
 
-## Credits
-
-- Design: Botanical Reverie aesthetic
-- Artwork: Custom-generated using AI image generation
-- Typography: Google Fonts
-- Components: shadcn/ui + Tailwind CSS
-- Built with: React + Vite
-
----
-
-## Version
-
-**v1.0.0** - Initial release
-
-Last updated: December 27, 2025
-
----
-
-Made with ❤️ for someone special.
+**Made with ❤️ for someone special**

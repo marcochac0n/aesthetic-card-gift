@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { getAssetPath } from '@/lib/assets';
 
 /**
  * Countdown Page - Botanical Reverie Design
@@ -93,8 +94,8 @@ export default function CountdownPage({ onUnlock }: { onUnlock: () => void }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{
-      backgroundImage: 'url(/images/vintage-letter-texture.png)',
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{
+      backgroundImage: `url(${getAssetPath('images/vintage-letter-texture.png')})`,
       backgroundSize: 'cover',
       backgroundAttachment: 'fixed',
     }}>
@@ -122,10 +123,10 @@ export default function CountdownPage({ onUnlock }: { onUnlock: () => void }) {
 
       {/* Decorative botanical elements */}
       <div className="absolute top-10 left-5 opacity-30 w-24 h-24 pointer-events-none float-element">
-        <img src="/images/bee-watercolor.png" alt="" className="w-full h-full object-contain" />
+        <img src={getAssetPath('images/bee-watercolor.png')} alt="" className="w-full h-full object-contain" />
       </div>
       <div className="absolute bottom-20 right-10 opacity-25 w-32 h-32 pointer-events-none">
-        <img src="/images/iris-botanical.png" alt="" className="w-full h-full object-contain" />
+        <img src={getAssetPath('images/iris-botanical.png')} alt="" className="w-full h-full object-contain" />
       </div>
 
       {/* Main card container - asymmetrical positioning */}
@@ -193,7 +194,7 @@ export default function CountdownPage({ onUnlock }: { onUnlock: () => void }) {
                 style={{ perspective: '1000px' }}
               >
                 <img
-                  src="/images/antique-wax-seal.png"
+                  src={getAssetPath('images/antique-wax-seal.png')}
                   alt="Sealed with wax"
                   className="w-32 h-32 object-contain drop-shadow-lg"
                 />
