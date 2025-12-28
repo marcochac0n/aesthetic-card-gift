@@ -21,7 +21,12 @@ import { cardData, type CardPage } from '@/card-data';
 
 
 
-export default function CardExperience({ cards = cardData }: { cards?: CardPage[] }) {
+interface CardExperienceProps {
+  cards?: CardPage[];
+  onClose?: () => void;
+}
+
+export default function CardExperience({ cards = cardData, onClose }: CardExperienceProps) {
   const [currentPage, setCurrentPage] = useState(0);
   const [isFlipping, setIsFlipping] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
@@ -105,6 +110,14 @@ export default function CardExperience({ cards = cardData }: { cards?: CardPage[
         .text-reveal-line-1 { animation-delay: 0.1s; }
         .text-reveal-line-2 { animation-delay: 0.3s; }
         .text-reveal-line-3 { animation-delay: 0.5s; }
+        
+        @keyframes closeButtonHover {
+          0%, 100% { transform: scale(1) rotate(0deg); }
+          50% { transform: scale(1.1) rotate(5deg); }
+        }
+        .close-button-hover:hover {
+          animation: closeButtonHover 0.4s ease-in-out;
+        }
       `}</style>
 
       {/* Card container */}
@@ -206,6 +219,17 @@ export default function CardExperience({ cards = cardData }: { cards?: CardPage[
         <p className="text-center text-xs text-amber-700 mt-6 font-lora">
           Swipe left or right to turn pages
         </p>
+
+        {/* Close button - Aesthetic design */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="mt-8 px-6 py-2 border-2 border-amber-300 text-amber-700 rounded-full font-lora text-sm hover:bg-amber-50 transition-all close-button-hover"
+            title="Close and reseal the card"
+          >
+            ✕ Close Card
+          </button>
+        )}
       </div>
     </div>
   );

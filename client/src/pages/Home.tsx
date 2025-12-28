@@ -40,6 +40,10 @@ export default function Home() {
     setCardOpened(true);
   };
 
+  const handleCloseCard = () => {
+    setCardOpened(false);
+  };
+
   if (!isUnlocked) {
     return <CountdownPage onUnlock={handleUnlock} />;
   }
@@ -105,5 +109,5 @@ export default function Home() {
     );
   }
 
-  return <CardExperience />;
+  return <CardExperience onClose={handleCloseCard} />;
 }
